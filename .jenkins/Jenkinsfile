@@ -2,9 +2,6 @@ pipeline {
   agent any
   stages {
     stage('Precommit-checking') {
-      options {
-        timeout(time: 2, unit: 'MINUTES')
-      }
       agent {
         docker {
           image 'oetools-azure:1.6'
@@ -12,15 +9,14 @@ pipeline {
 
       }
       steps {
-        sh './scripts/check-precommit-reqs'
+        timeout(2) {
+          sh './scripts/check-precommit-reqs'
+        }
       }
     }
     stage('Build and Test') {
       parallel {
         stage('Simulation default compiler') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           // This particular test asserts that everything (at least
           // for simulation) can be built after using our
           // install-prereqs script to bootstrap a machine.
@@ -30,29 +26,28 @@ pipeline {
             }
           }
           steps {
-            // This is run to test that it works with the dependencies
-            // installed by our install-prereqs script.
-            sh './scripts/check-precommit-reqs'
+            timeout(15) {
+              // This is run to test that it works with the dependencies
+              // installed by our install-prereqs script.
+              sh './scripts/check-precommit-reqs'
 
-            // We actually expect `ctest` to fail because it is an
-            // older version that emits a failure if any tests are
-            // skipped. In other stages, we explicitly install an
-            // updated version of CMake.
-            dir('build') {
-              sh '''
+              // We actually expect `ctest` to fail because it is an
+              // older version that emits a failure if any tests are
+              // skipped. In other stages, we explicitly install an
+              // updated version of CMake.
+              dir('build') {
+                sh '''
                 cmake ..
                 make
                 OE_SIMULATION=1 ctest --verbose --output-on-failure || true
               '''
-              // Note that `make package` is not expected to work
-              // without extra configuration.
+                // Note that `make package` is not expected to work
+                // without extra configuration.
+              }
             }
           }
         }
         stage('Simulation clang-7 SGX1 Debug') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             docker {
               image 'oetools-azure:1.6'
@@ -60,13 +55,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -b Debug --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -b Debug --compiler=clang-7'
+            }
           }
         }
         stage('Simulation clang-7 SGX1 Release') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             docker {
               image 'oetools-azure:1.6'
@@ -74,13 +68,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1 -b Release --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1 -b Release --compiler=clang-7'
+            }
           }
         }
         stage('Simulation clang-7 SGX1 RelWithDebInfo') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             docker {
               image 'oetools-azure:1.6'
@@ -88,13 +81,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1 -b RelWithDebInfo --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1 -b RelWithDebInfo --compiler=clang-7'
+            }
           }
         }
         stage('Simulation clang-7 SGX1-FLC Debug') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             docker {
               image 'oetools-azure:1.6'
@@ -102,13 +94,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b Debug --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b Debug --compiler=clang-7'
+            }
           }
         }
         stage('Simulation clang-7 SGX1-FLC Release') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             docker {
               image 'oetools-azure:1.6'
@@ -116,13 +107,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b Release --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b Release --compiler=clang-7'
+            }
           }
         }
         stage('Simulation clang-7 SGX1-FLC RelWithDebInfo') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             docker {
               image 'oetools-azure:1.6'
@@ -130,13 +120,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b RelWithDebInfo --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b RelWithDebInfo --compiler=clang-7'
+            }
           }
         }
         stage('Coffeelake clang-7 SGX1-FLC Debug') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             node {
               label 'hardware'
@@ -144,13 +133,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b Debug -d --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b Debug -d --compiler=clang-7'
+            }
           }
         }
         stage('Coffeelake clang-7 SGX1-FLC Release') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             node {
               label 'hardware'
@@ -158,13 +146,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b Release -d --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b Release -d --compiler=clang-7'
+            }
           }
         }
         stage('Coffeelake clang-7 SGX1-FLC RelWithDebInfo') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             node {
               label 'hardware'
@@ -172,13 +159,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b RelWithDebInfo -d --compiler=clang-7'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b RelWithDebInfo -d --compiler=clang-7'
+            }
           }
         }
         stage('Coffeelake gcc SGX1-FLC Debug') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             node {
               label 'hardware'
@@ -186,13 +172,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b Debug -d --compiler=gcc'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b Debug -d --compiler=gcc'
+            }
           }
         }
         stage('Coffeelake gcc SGX1-FLC Release') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             node {
               label 'hardware'
@@ -200,13 +185,12 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b Release -d --compiler=gcc'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b Release -d --compiler=gcc'
+            }
           }
         }
         stage('Coffeelake gcc SGX1-FLC RelWithDebInfo') {
-          options {
-            timeout(time: 15, unit: 'MINUTES')
-          }
           agent {
             node {
               label 'hardware'
@@ -214,7 +198,9 @@ pipeline {
 
           }
           steps {
-            sh './scripts/test-build-config -p SGX1FLC -b RelWithDebInfo -d --compiler=gcc'
+            timeout(15) {
+              sh './scripts/test-build-config -p SGX1FLC -b RelWithDebInfo -d --compiler=gcc'
+            }
           }
         }
       }
