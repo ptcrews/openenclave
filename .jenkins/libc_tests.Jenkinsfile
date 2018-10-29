@@ -1,12 +1,12 @@
 pipeline {
   agent any
-  options {
-    timeout(time: 30, unit: 'MINUTES')
-  }
   stages {
     stage('Build and Run libc Tests') {
       parallel {
         stage('libc clang-7 Debug') {
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -18,6 +18,9 @@ pipeline {
           }
         }
         stage('libc clang-7 Release') {
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -29,6 +32,9 @@ pipeline {
           }
         }
         stage('libc clang-7 RelWithDebInfo') {
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -40,6 +46,9 @@ pipeline {
           }
         }
         stage('libc gcc Debug') {
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -51,6 +60,9 @@ pipeline {
           }
         }
         stage('libc gcc Release') {
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -62,6 +74,9 @@ pipeline {
           }
         }
         stage('libc gcc RelWithDebInfo') {
+          options {
+            timeout(time: 15, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'

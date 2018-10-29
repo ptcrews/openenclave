@@ -1,12 +1,12 @@
 pipeline {
   agent any
-  options {
-    timeout(time: 30, unit: 'MINUTES')
-  }
   stages {
     stage('Build, Test, and Package') {
       parallel {
         stage('SGX1FLC Package Debug') {
+          options {
+            timeout(time: 10, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -20,6 +20,9 @@ pipeline {
           }
         }
         stage('SGX1FLC Package Release') {
+          options {
+            timeout(time: 10, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -36,6 +39,9 @@ pipeline {
           }
         }
         stage('SGX1FLC Package RelWithDebInfo') {
+          options {
+            timeout(time: 10, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -49,6 +55,9 @@ pipeline {
           }
         }
         stage('SGX1 Package Debug') {
+          options {
+            timeout(time: 10, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -62,6 +71,9 @@ pipeline {
           }
         }
         stage('SGX1 Package Release') {
+          options {
+            timeout(time: 10, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
@@ -75,6 +87,9 @@ pipeline {
           }
         }
         stage('SGX1 Package RelWithDebInfo') {
+          options {
+            timeout(time: 10, unit: 'MINUTES')
+          }
           agent {
             node {
               label 'hardware'
