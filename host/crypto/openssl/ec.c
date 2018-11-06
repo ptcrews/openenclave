@@ -13,6 +13,20 @@
 #include "init.h"
 #include "key.h"
 
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
+/* Needed for compatibility with ssl1.1 */
+static void ECDSA_SIG_get0(
+    const ECDSA_SIG* sig,
+    const BIGNUM** pr,
+    const BIGNUM** ps)
+{
+    if (pr != NULL)
+        *pr = sig->r;
+    if (ps != NULL)
+        *ps = sig->s;
+}
+
+#endif
 /* Magic numbers for the EC key implementation structures */
 static const uint64_t _PRIVATE_KEY_MAGIC = 0x19a751419ae04bbc;
 static const uint64_t _PUBLIC_KEY_MAGIC = 0xb1d39580c1f14c02;
@@ -490,8 +504,8 @@ oe_result_t oe_ecdsa_signature_write_der(
     if (!(sig = ECDSA_SIG_new()))
         OE_RAISE(OE_FAILURE);
 
-    const BIGNUM *sig_r;
-    const BIGNUM *sig_s;
+    const BIGNUM* sig_r;
+    const BIGNUM* sig_s;
     ECDSA_SIG_get0(sig, &sig_r, &sig_s);
     /* Convert R to big number object */
     if (!(BN_bin2bn(data, size, (BIGNUM*)sig_r)))

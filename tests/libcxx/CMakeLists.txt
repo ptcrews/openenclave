@@ -22,7 +22,6 @@ foreach(testcase ${alltests})
 
 # the allocations are entirely optimized out by Clang in these tests and are excluded from Clang release builds
     if ("${name}" MATCHES "cons_default_throws_bad_alloc.pass" OR "${name}" MATCHES "allocator_allocator.members_construct.pass")
-<<<<<<< 65b5bf0d9e4903c2f2014ebf0e1979601e130610
         string(TOUPPER ${CMAKE_BUILD_TYPE} BUILD_TYPE_UPPER)
         if (CMAKE_CXX_COMPILER_ID MATCHES Clang AND BUILD_TYPE_UPPER MATCHES REL)
             continue()
@@ -33,10 +32,6 @@ foreach(testcase ${alltests})
     if ("${name}" MATCHES "convert_file_time.sh" OR "${name}" MATCHES "sequences_array_at.pass")
 	if (CMAKE_CXX_COMPILER_ID MATCHES GNU)
 	    continue()
-=======
-        if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" AND CMAKE_BUILD_TYPE MATCHES "Rel")
-                continue()
->>>>>>> more changes for 18.04
         endif()
     endif()
 
