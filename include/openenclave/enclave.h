@@ -481,6 +481,62 @@ oe_result_t oe_get_seal_key(
     size_t* key_buffer_size);
 
 /**
+ * Returns an elliptical curve public key that is associated with the identity
+ * of the enclave. The public key can be used to verify signatures signed by
+ * the enclave using ECDSA or creating a shared secret using ECDH.
+ *
+ * @param seal_policy The policy for the identity properties used to derive the
+ * seal key.
+ * @param key_info Optional buffer for the enclave-specific key information which
+ * can be used to retrieve the same key later, on a newer security version.
+ * @param key_info_size The size of the **key_info** buffer.
+ * @param key_buffer A pointer to the buffer that on success contains the
+ * requested public key in the PEM format.
+ * @param key_buffer_size On success, this contains the size of **key_buffer**.
+ * 
+ * @retval OE_OK The seal key was successfully requested.
+ * @retval OE_INVALID_PARAMETER At least one parameter is invalid.
+ * @retval OE_BUFFER_TOO_SMALL The **key_buffer** buffer is too small.
+ * @retval OE_INVALID_CPUSVN **key_info** contains an invalid CPUSVN.
+ * @retval OE_INVALID_ISVSVN **key_info** contains an invalid ISVSVN.
+ * @retval OE_INVALID_KEYNAME **key_info** contains an invalid KEYNAME.
+ */
+oe_result_t oe_get_public_key_by_policy(
+    oe_seal_policy_t policy,
+    const uint8_t* key_info,
+    size_t key_info_size,
+    uint8_t** key_buffer,
+    size_t* key_buffer_size);
+
+/**
+ * Returns an elliptical curve private key that is associated with the identity
+ * of the enclave. The private key can be used to sign data using ECDSA or
+ * creating a shared secret using ECDH.
+ *
+ * @param seal_policy The policy for the identity properties used to derive the
+ * seal key.
+ * @param key_info Optional buffer for the enclave-specific key information which
+ * can be used to retrieve the same key later, on a newer security version.
+ * @param key_info_size The size of the **key_info** buffer.
+ * @param key_buffer A pointer to the buffer that on success contains the
+ * requested public key in the PEM format.
+ * @param key_buffer_size On success, this contains the size of **key_buffer**.
+ * 
+ * @retval OE_OK The seal key was successfully requested.
+ * @retval OE_INVALID_PARAMETER At least one parameter is invalid.
+ * @retval OE_BUFFER_TOO_SMALL The **key_buffer** buffer is too small.
+ * @retval OE_INVALID_CPUSVN **key_info** contains an invalid CPUSVN.
+ * @retval OE_INVALID_ISVSVN **key_info** contains an invalid ISVSVN.
+ * @retval OE_INVALID_KEYNAME **key_info** contains an invalid KEYNAME.
+ */
+oe_result_t oe_get_private_key_by_policy(
+    oe_seal_policy_t policy,
+    const uint8_t* key_info,
+    size_t key_info_size,
+    uint8_t** key_buffer,
+    size_t* key_buffer_size);
+
+/**
  * Obtains the enclave handle.
  *
  * This function returns the enclave handle for the current enclave. The

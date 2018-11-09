@@ -4,6 +4,7 @@
 #include <openenclave/bits/safecrt.h>
 #include <openenclave/enclave.h>
 #include <openenclave/internal/enclavelibc.h>
+#include <openenclave/internal/kdf.h>
 #include <openenclave/internal/raise.h>
 #include <openenclave/internal/sgxtypes.h>
 #include <openenclave/internal/utils.h>
@@ -275,3 +276,67 @@ oe_result_t oe_get_seal_key_by_policy(
 done:
     return result;
 }
+
+#if 0
+static oe_result_t _generate_private_key(
+    uint8_t* key,
+    size_t key_size,
+    OE_SHA256* output_key)
+{
+    oe_result_t result = OE_UNEXPECTED;
+
+    if (!key || !output_key)
+        OE_RAISE(OE_INVALID_PARAMETER);
+
+    oe_kdf_create_fixed_data(k)
+
+done:
+    return result;
+}
+
+oe_result_t oe_get_public_key_by_policy(
+    oe_seal_policy_t policy,
+    const uint8_t* key_info,
+    size_t key_info_size,
+    uint8_t** key_buffer,
+    size_t* key_buffer_size)
+{
+    oe_result_t result = OE_UNEXPECTED;
+    sgx_key_t sgx_key;
+    size_t sgx_key_size = sizeof(sgx_key);
+
+    // Check for invalid parameters.
+    if (!key_buffer || !key_buffer_size)
+        OE_RAISE(OE_INVALID_PARAMETER);
+
+    // Get the SGX symmetric key.
+    OE_CHECK(
+        oe_get_seal_key_by_policy(
+            policy, &sgx_key, &sgx_key_size, key_info, &key_info_size));
+
+    // Keep deriving keys until we get a valid private EC private key.
+    do
+    {
+        oe_kdf_create_fixed_data(
+            sgx_key.buf,
+            sizeof(sgx_key.buf),
+
+        )
+
+    } while(1);
+
+done:
+    oe_secure_zero_fill(&sgx_key, sizeof(sgx_key));
+    return result;
+}
+
+oe_result_t oe_get_private_key_by_policy(
+    oe_seal_policy_t policy,
+    const uint8_t* key_info,
+    size_t key_info_size,
+    uint8_t** key_buffer,
+    size_t* key_buffer_size)
+{
+
+}
+#endif
