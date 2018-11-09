@@ -119,7 +119,8 @@ OE_INLINE footer_t* _get_footer(void* ptr)
         HEADER->prev = NULL;                                               \
         HEADER->alignment = ALIGNMENT;                                     \
         HEADER->size = SIZE;                                               \
-        HEADER->num_addrs = oe_backtrace(HEADER->addrs, OE_BACKTRACE_MAX); \
+        HEADER->num_addrs = 						   \
+		  (uint64_t)oe_backtrace(HEADER->addrs, OE_BACKTRACE_MAX); \
         HEADER->magic2 = HEADER_MAGIC2;                                    \
         _get_footer(HEADER->data)->magic = FOOTER_MAGIC;                   \
     } while (0)
@@ -250,7 +251,7 @@ OE_INLINE bool _check_multiply_overflow(size_t x, size_t y)
 static void _malloc_dump(size_t size, void* addrs[], int num_addrs)
 {
     char** syms = NULL;
-
+    
     /* Get symbol names for these addresses */
     if (!(syms = oe_backtrace_symbols(addrs, num_addrs)))
         goto done;
@@ -290,7 +291,7 @@ static void _dump(bool need_lock)
             "=== %s(): %zu bytes in %zu blocks\n", __FUNCTION__, bytes, blocks);
 
         for (header_t* p = list->head; p; p = p->next)
-            _malloc_dump(p->size, p->addrs, p->num_addrs);
+            _malloc_dump(p->size, p->addrs, (int)p->num_addrs);
 
         oe_host_printf("\n");
     }
